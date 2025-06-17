@@ -6,7 +6,7 @@ from google.genai import types
 
 flags = ['--verbose']
 
-def main():
+def read_arguments():
     argument = sys.argv[1:]
     load_dotenv()
 
@@ -24,7 +24,7 @@ def main():
             contents=messages,
         )
         print(response.text)
-        
+
         if flag in flags:
             print("User prompt: " + argument[0])
             print("Prompt tokens: " + str(response.usage_metadata.prompt_token_count))
@@ -33,5 +33,8 @@ def main():
     else:
         print('Please input just 1 prompt in quotation marks')
         exit(1)
+
+def main():
+    read_arguments()
 
 main()
