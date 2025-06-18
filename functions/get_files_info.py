@@ -1,5 +1,6 @@
 import os
 
+MAX_CHARS = 10000
 
 def get_files_info(working_directory, directory=None):
     dir = os.path.join(working_directory, directory)
@@ -9,8 +10,6 @@ def get_files_info(working_directory, directory=None):
         if child.startswith(parent):
             print_directory_contents(dir)
         else:
-            print(parent)
-            print(child)
             print(f'Error: Cannot list "{directory}" as it is outside the permitted working directory')
     else:
         print(f'Error: "{directory}" is not a directory')
@@ -24,3 +23,23 @@ def print_directory_contents(dir):
         size = os.path.getsize(path)
         is_dir = os.path.isdir(path)
         print(f"- {name}: file_size={size} bytes, is_dir={is_dir}")
+
+
+def get_file_content(working_directory, file_path):
+    dir = os.path.join(working_directory, file_path)
+    parent = os.path.abspath(working_directory)
+    child = os.path.abspath(dir)
+    
+    if not child.startswith(parent):
+        print(f'Error: Cannot read "{file_path}" as it is outside the permitted working directory')
+
+    elif not os.path.isfile(dir):
+        print(f'Error: File not found or is not a regular file: "{file_path}"')
+
+    else:
+        with open(dir, "r") as f:
+            file_content_string = f.read()
+  
+            print(file_content_string[0:MAX_CHARS])
+            if len(file_content_string) > MAX_CHARS:
+                print(f'[...File "{file_path}" truncated at 10000 characters]')
