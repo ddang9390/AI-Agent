@@ -1,5 +1,7 @@
 import unittest
-from functions.get_files_info import get_files_info, get_file_content, write_file
+from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
+from functions.write_file import write_file
 
 class FileTest(unittest.TestCase):
     # def test_get_files_info(self):
