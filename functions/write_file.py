@@ -1,5 +1,23 @@
 import os
+from google.genai import types
 
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Overwrites file with the user's content",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file that will be overwritten.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The content that the file will contain"
+            )
+        },
+    ),
+)
 def check_if_in_directory(working_directory, file_path, dir):
     parent = os.path.abspath(working_directory)
     child = os.path.abspath(dir)

@@ -1,5 +1,20 @@
 import os
 import subprocess
+from google.genai import types
+
+schema_run_python = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs the mentioned python file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The python file that will be ran",
+            ),
+        },
+    ),
+)
 
 def check_if_in_directory(working_directory, file_path, dir):
     parent = os.path.abspath(working_directory)

@@ -1,6 +1,21 @@
 import os
+from google.genai import types
 
 MAX_CHARS = 10000
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Displays the content that is within the mentioned file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file that will be read by the agent",
+            ),
+        },
+    ),
+)
 
 def check_if_in_directory(working_directory, file_path, dir):
     parent = os.path.abspath(working_directory)
