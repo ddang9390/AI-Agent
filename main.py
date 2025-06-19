@@ -4,7 +4,21 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+from functions.get_files_info import schema_get_files_info
+
 flags = ['--verbose']
+
+#Hardcoded prompt that instructs the LLM on what to do
+system_prompt = """
+You are a helpful AI coding agent.
+
+When a user asks a question or makes a request, make a function call plan. You can perform the following operations:
+
+- List files and directories
+
+All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
+"""
+
 
 def read_arguments():
     argument = sys.argv[1:]
@@ -17,13 +31,24 @@ def read_arguments():
             flag = argument[1]
         api_key = os.environ.get("GEMINI_API_KEY")
 
-        client = genai.Client(api_key=api_key)
+        #List of available functions
+        available_functions = types.Tool(
+            function_declarations=[
+                schema_get_files_info,
+            ]
+        )
 
+        client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
             model="gemini-2.0-flash-001",
             contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions], system_instruction=system_prompt
+            )
         )
-        print(response.text)
+        #print(response.text)
+        for func in response.function_calls:
+            print(f"Calling function: {func.name}({func.args})")
 
         if flag in flags:
             print("User prompt: " + argument[0])
