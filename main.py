@@ -8,7 +8,7 @@ from functions.get_files_info import schema_get_files_info
 from functions.get_file_content import schema_get_file_content
 from functions.run_python import schema_run_python
 from functions.write_file import schema_write_file
-
+from functions.call_function import call_function
 
 flags = ['--verbose']
 
@@ -57,13 +57,17 @@ def read_arguments():
             )
         )
         #print(response.text)
-        for func in response.function_calls:
-            print(f"{func.name}: ({func.args})")
 
         if flag in flags:
-            print("User prompt: " + argument[0])
-            print("Prompt tokens: " + str(response.usage_metadata.prompt_token_count))
-            print("Response tokens: " + str(response.usage_metadata.candidates_token_count))
+            for func in response.function_calls:
+                call_function(func, verbose=True)
+            # print("User prompt: " + argument[0])
+            # print("Prompt tokens: " + str(response.usage_metadata.prompt_token_count))
+            # print("Response tokens: " + str(response.usage_metadata.candidates_token_count))
+
+        else:
+            for func in response.function_calls:
+                call_function(func, verbose=False)
 
     else:
         print('Please input just 1 prompt in quotation marks')
