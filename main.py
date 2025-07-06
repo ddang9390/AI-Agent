@@ -60,14 +60,18 @@ def read_arguments():
 
         if flag in flags:
             for func in response.function_calls:
-                call_function(func, verbose=True)
-            # print("User prompt: " + argument[0])
-            # print("Prompt tokens: " + str(response.usage_metadata.prompt_token_count))
-            # print("Response tokens: " + str(response.usage_metadata.candidates_token_count))
+                content = call_function(func, verbose=True)
+                if not content.parts[0].function_response.response:
+                    raise ValueError("Expecting response")
+                else:
+                    print(f"-> {content.parts[0].function_response.response}")
+
 
         else:
             for func in response.function_calls:
-                call_function(func, verbose=False)
+                content = call_function(func, verbose=False)
+                if not content.parts[0].function_response.response:
+                    raise ValueError("Expecting response")
 
     else:
         print('Please input just 1 prompt in quotation marks')
